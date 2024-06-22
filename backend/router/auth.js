@@ -6,4 +6,5 @@ const { loginHandler, signUpHandler } = require("../controller/authController");
 loginRouter.route("/").post(loginHandler);
 signUpRouter.route("/").post(signUpHandler);
 
+
 module.exports = { loginRouter, signUpRouter };

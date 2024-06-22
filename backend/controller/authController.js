@@ -2,9 +2,25 @@ const jwt = require("jsonwebtoken");
 const { v4: uuid } = require("uuid");
 const userdata = require("../db/users");
 
+//Creating a middleware to verify the token 
+const authVerify = (req, res, next) => {
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ message: "Authorization token required" });
+    }
+  
+    try {
+      const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+      req.user = { userId: decodedToken.id };
+      return next();
+    } catch (err) {
+      console.log(err);
+      return res.status(401).json({ message: "Invalid token" });
+    }
+  };
+
 const signUpHandler = (req, res) => {
   const { username, password } = req.body;
-  // For Duplicate User
   const isUserPresent = userdata.users.some(user => user.username === username);
   if (isUserPresent) {
     res.status(422).json({ message: "User Already exists" });
@@ -28,4 +44,4 @@ const loginHandler = (req, res) => {
   }
 };
 
-module.exports = { loginHandler, signUpHandler };
+module.exports = { loginHandler, signUpHandler ,authVerify};

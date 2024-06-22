@@ -1,8 +1,8 @@
 const express = require("express");
 const quizRouter = express.Router();
 const quizzes = require("../db/quizes");
-
-quizRouter.route("/").get((req, res) => {
+const {authVerify} = require("../controller/authController")
+quizRouter.route("/").get(authVerify,(req, res) => {
   res.json(quizzes.data);
 });
 
